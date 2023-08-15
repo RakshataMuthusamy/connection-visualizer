@@ -10,3 +10,16 @@ type Person = {
     closeness: number,
     connections: Person[]
 }
+
+const n: Person = {
+    name: 'null',
+    initials: 'null',
+    isUser: false,
+    job: 'null',
+    placeOfWork: 'null',
+    description: 'null',
+    utility: 'null',
+    latestMeetingDate: 'null',
+    closeness: 0,
+    connections: []
+  }

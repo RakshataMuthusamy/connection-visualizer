@@ -1,55 +1,51 @@
-import { CSSProperties } from "react";
+'use client';
 
-function Line({ x0, y0, x1, y1 }: {x0: number, y0: number, x1: number, y1: number}) {
-    const angle = Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI;
-    const distance = Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
+import { useState } from "react";
+import { Line, ProfileCard } from "./profilecard";
+import { Profile } from "./profile";
 
-    const positionStyle: CSSProperties = {
-        position: 'absolute',
-        top: `${y0}px`,
-        left: `${x0}px`,
-        width: `${distance}px`,
-        transform: `rotate(${angle}deg)`,
-        transformOrigin: '0.0',
-    };
+function determineConnections(people: Person[]) {
+    const connectionsList: {a: Person, b: Person}[] = [];
 
-    const lineStyle: CSSProperties = {
-        borderColor: '#000',
-        borderStyle: 'solid',
-        borderWidth: 1,
-    }
+    people.forEach(function(person) {
+        person.connections.forEach(function(connection) {
+        const link = { a: person, b: connection };
+        const reverseLink = { a: connection, b: person }
+        if (!connectionsList.includes(link) && !connectionsList.includes(reverseLink)) { connectionsList.push(link); }
+        });
+    });
 
-    const styleProps = Object.assign({}, positionStyle, lineStyle);
-
-    return (
-        <div className="line-placeholder">
-            <div
-                style={styleProps}
-            />
-        </div>
-    );
+    return connectionsList;
 }
 
-function ProfileCard({ person, handleClick, x, y }: {person: Person, handleClick: () => void, x: number, y: number}) {
-    const bColor = person.isUser ? 'green': 'black';
-    const positionStyle: CSSProperties = {
-        position: 'absolute',
-        top: `${y}px`,
-        left: `${x}px`,
+function ProfileGraph({ profiles }:
+    {profiles: Person[]}) {
+    const [ showProfile, setShowProfile ] = useState(false);
+    const [ currProfile, setCurrProfile ] = useState<Person>(n);
+    const [ isEditMode, setIsEditMode ] = useState(false);
+    const [ currEditing, setCurrEditing ] = useState<Person>(n);
+
+    function openProfile(person: Person) {
+        setShowProfile(true);
+        setCurrProfile(person);
     }
 
-    const styleProps = Object.assign({}, positionStyle, { borderColor: bColor })
+    function closeProfile() {
+        setShowProfile(false);
+        setCurrProfile(n);
+    }
 
-    return (
-        <div className="profile-card" style={styleProps} onClick={handleClick}>
-            <div className="name">{person.initials}</div>
-            <div className="job">{person.job}</div>
-        </div>
-    )
-}
+    function openEditor(person: Person) {
+        setIsEditMode(true);
+        setCurrEditing(person);
+    }
 
-function ProfileGraph({ profiles, connections, handleClick }:
-    {profiles: Person[], connections: {a: Person, b: Person}[], handleClick: (person: Person) => void}) {
+    function closeEditor() {
+        setIsEditMode(false);
+        setCurrEditing(n);
+    }
+    
+    let connections = determineConnections(profiles);
 
     let profileLocations: {p: Person, x: number, y: number}[] = [];
     profiles.forEach(function(profile) {
@@ -72,9 +68,12 @@ function ProfileGraph({ profiles, connections, handleClick }:
 
     return (
         <>
-            {profileLocations.map((loc) =>
-                (<ProfileCard key={loc.p.name} person={loc.p} handleClick={() => handleClick(loc.p)} x={loc.x} y={loc.y} />))}
-            {connectionLocations.map((loc) => (<Line x0={loc.x0} y0={loc.y0} x1={loc.x1} y1={loc.y1} />))}
+            {showProfile ? <Profile person={currProfile} handleClick={closeProfile} /> : <>
+                {profileLocations.map((loc) =>
+                    (<ProfileCard key={loc.p.name} person={loc.p} handleClick={() => openProfile(loc.p)} x={loc.x} y={loc.y} />))}
+                {connectionLocations.map((loc) => (<Line x0={loc.x0} y0={loc.y0} x1={loc.x1} y1={loc.y1} />))}
+            </>}
+            
         </>
     );
 }

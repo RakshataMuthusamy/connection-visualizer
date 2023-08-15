@@ -1,6 +1,4 @@
-import { MouseEventHandler } from "react";
-
-function Profile({ person, handleClick } : {person: Person, handleClick: MouseEventHandler}) {
+export function Profile({ person, handleClick } : {person: Person, handleClick: () => void}) {
     // function handleClick() {
     //     // Show when profile is clicked (this should be state)
     // }
@@ -19,5 +17,3 @@ function Profile({ person, handleClick } : {person: Person, handleClick: MouseEv
         </div>
     );
 }
-
-export default Profile;
