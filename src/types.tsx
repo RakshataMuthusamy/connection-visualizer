@@ -1,5 +1,6 @@
 type Person = {
     name: string,
+    initials: string,
     job: string,
     placeOfWork: string,
     description: string,
@@ -7,5 +8,5 @@ type Person = {
     latestMeetingDate: string,
     isUser: boolean,
     closeness: number,
-    people: Person[]
+    connections: Person[]
 }

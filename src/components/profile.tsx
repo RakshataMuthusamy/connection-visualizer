@@ -1,12 +1,23 @@
-function ProfileCard({ person }: {person: Person}) {
-    const bColor = person.isUser ? 'green': 'black';
+import { MouseEventHandler } from "react";
+
+function Profile({ person, handleClick } : {person: Person, handleClick: MouseEventHandler}) {
+    // function handleClick() {
+    //     // Show when profile is clicked (this should be state)
+    // }
 
     return (
-        <div className="profile-card" style={{ borderColor: bColor }}>
-            <div className="name">{person.name}</div>
-            <div className="job">{person.job}</div>
+        <div className="profile">
+            <button className="close" onClick={handleClick}>&times;</button>
+            <div className="content">
+                <span className="name">{person.name}</span> <br />
+                <span className="job">{person.job}, {person.placeOfWork}</span> <br /> <br />
+                Description: <br /> <span className="long-form">{person.description}</span> <br /> <br />
+                Utility of Connection: <br /> <span className="long-form">{person.utility}</span> <br /> <br />
+                Closeness Rating: {person.closeness} <br /> <br />
+                Latest Meeting Date: {person.latestMeetingDate}
+            </div>
         </div>
-    )
+    );
 }
 
-export default ProfileCard;
+export default Profile;
